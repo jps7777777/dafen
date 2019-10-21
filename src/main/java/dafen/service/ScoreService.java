@@ -20,6 +20,14 @@ public interface ScoreService {
      */
     List<ScoreModel> getScoreByCondition(int userId,int times,int depId,int type,int page) throws FinallyException;
 
+    /**
+     * 根据次数导出数据
+     * @param times
+     * @return
+     * @throws FinallyException
+     */
+    List<Object> exportScoreByTimes(int times) throws FinallyException;
+
     void setScored(ScoreModel scoreModel) throws FinallyException;
 
     void updateScored(ScoreModel scoreModel)throws FinallyException;

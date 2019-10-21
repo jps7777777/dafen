@@ -1,7 +1,11 @@
 package dafen.service.impl;
 
+import dafen.bean.DepartmentDO;
 import dafen.bean.ScoreDO;
+import dafen.bean.UserDO;
+import dafen.dao.DepartmentDOMapper;
 import dafen.dao.ScoreDOMapper;
+import dafen.dao.UserDOMapper;
 import dafen.exception.EnumException;
 import dafen.exception.FinallyException;
 import dafen.service.ScoreService;
@@ -11,16 +15,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class ScoreServiceImpl implements ScoreService {
 
     @Autowired
     private ScoreDOMapper scoreDOMapper;
+    @Autowired
+    private UserDOMapper userDOMapper;
+    @Autowired
+    private DepartmentDOMapper departmentDOMapper;
 
     @Override
     public List<ScoreModel> getScoreByCondition(int userId, int times, int depId, int type, int page) throws FinallyException {
@@ -49,7 +54,7 @@ public class ScoreServiceImpl implements ScoreService {
             listDO = scoreDOMapper.selectByUserId(userId, start, end);
         } else if (type == 1) {// 部门的次数列表
             listDO = scoreDOMapper.selectByDepartmentId(depId, start, end);
-        } else  {// 次数列表
+        } else {// 次数列表
             listDO = scoreDOMapper.selectByTimes(times, start, end);
         }
         if (listDO.size() == 0) {
@@ -60,6 +65,53 @@ public class ScoreServiceImpl implements ScoreService {
             models.add(convertByDO(s));
         }
         return models;
+    }
+
+    /**
+     * 根据次数导出数据
+     * 做连表查询
+     *
+     * @param times
+     * @return
+     * @throws FinallyException
+     */
+    @Override
+    public List<Object> exportScoreByTimes(int times) throws FinallyException {
+        if (times < 1) {
+            throw new FinallyException(EnumException.PARAMS_ERROR);
+        }
+        List<ScoreDO> list = scoreDOMapper.exportScoreByTimes(times);
+        if (list.size() < 1) {
+            throw new FinallyException(EnumException.DATA_EMPTY, "没有该期的导出数据");
+        }
+        // 配置用户及部门信息
+        List<UserDO> userDOList = userDOMapper.selectAll();
+        List<DepartmentDO> departmentDOList = departmentDOMapper.selectAll();
+        Map<Integer,String> userMap = new HashMap<>();
+        Map<Integer,String> depMap = new HashMap<>();
+        for (UserDO u:userDOList
+             ) {
+            userMap.put(u.getId(),u.getUserName());
+        }
+        for (DepartmentDO d:departmentDOList
+             ) {
+            depMap.put(d.getId(),d.getdName());
+        }
+
+
+        // 组合数据
+        List<Object> res_list = new ArrayList<>();
+        for (ScoreDO s : list
+        ) {
+            Map<String,String> map = new HashMap<>();
+
+            map.put("reason",s.getReason());
+            map.put("userName",userMap.get(s.getUserId()));
+            map.put("depName",depMap.get(s.getDepartmentId()));
+            map.put("score",s.getScord()+"");
+            res_list.add(map);
+        }
+        return res_list;
     }
 
     @Override

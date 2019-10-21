@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
@@ -79,38 +80,43 @@ public class ExcelAction extends BaseAction {
      * @throws FinallyException
      */
     @RequestMapping("/export")
-    public void test2(HttpServletResponse response) throws FinallyException {
+    @ResponseBody
+    public CommonResponse test2(HttpServletResponse response,
+                      @RequestParam(name = "times")int times) throws FinallyException {
         ExcelData data = new ExcelData();
         data.setName("page_one");
         List<DepartmentModel> list = departmentService.getDepartments();
         List<String> titles = new ArrayList<>();
         List<List<Object>> rows = new ArrayList<>();
 
-//        List<ScoreModel> scoreModels = scoreService.getScoreByCondition(0,times,0);
+        List<Object> scoreModels = scoreService.exportScoreByTimes(times);
 
-        for (DepartmentModel model :list ) {
-            int dep_id = model.getId();
-            titles.add(model.getdName());
-        }
+        return CommonResponse.create(scoreModels);
 
-        titles.add("ID");
-
-        data.setTitles(titles);
-
-        for(int i = 0, length = list.size();i<length;i++){
-            DepartmentModel userInfo = list.get(i);
-            List<Object> row = new ArrayList<>();
-            row.add(userInfo.getId());
-            row.add(userInfo.getdName());
-            rows.add(row);
-        }
-        data.setRows(rows);
-        String file = new SimpleDateFormat("yyyyMMdd").format(new Date());
-        try{
-            ExcelUtils.exportExcel(response,file,data);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+//        titles.add("人员\\部门");
+//        for (DepartmentModel model :list ) {
+//            int dep_id = model.getId();
+//            titles.add(model.getdName());
+//        }
+//
+//        titles.add("ID");
+//
+//        data.setTitles(titles);
+//
+//        for(int i = 0, length = list.size();i<length;i++){
+//            DepartmentModel userInfo = list.get(i);
+//            List<Object> row = new ArrayList<>();
+//            row.add(userInfo.getId());
+//            row.add(userInfo.getdName());
+//            rows.add(row);
+//        }
+//        data.setRows(rows);
+//        String file = new SimpleDateFormat("yyyyMMdd").format(new Date());
+//        try{
+//            ExcelUtils.exportExcel(response,file,data);
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
     }
 
 //    /**

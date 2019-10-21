@@ -17,6 +17,14 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="delete_time" jdbcType="INTEGER" property="deleteTime" />
+<!--    <collection property="userDO" ofType="UserDO" column="user_id">-->
+<!--      <id column="u_id" property="id"/>&lt;!&ndash; 这里的column对应的是下面查询的别名，而不是表字段名 &ndash;&gt;-->
+<!--      <result column="user_name" property="userName"/>&lt;!&ndash; property对应JavaBean中的属性名 &ndash;&gt;-->
+<!--    </collection>-->
+<!--    <collection property="departmentDO" ofType="DepartmentDO" column="department_id">-->
+<!--      <id column="d_id" property="id"/>&lt;!&ndash; 这里的column对应的是下面查询的别名，而不是表字段名 &ndash;&gt;-->
+<!--      <result column="d_name" property="dName"/>&lt;!&ndash; property对应JavaBean中的属性名 &ndash;&gt;-->
+<!--    </collection>-->
   </resultMap>
   <sql id="Base_Column_List">
     <!--
@@ -27,6 +35,7 @@
     id, user_id, department_id, times, scord, reason, explain_in_detail, create_time, update_time,
     delete_time
   </sql>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     <!--
       WARNING - @mbg.generated
@@ -78,6 +87,38 @@
     where times = #{times,jdbcType=INTEGER} and department_id = #{departmentId,jdbcType=INTEGER}
     limit #{start,jdbcType=INTEGER},#{end,jdbcType=INTEGER}
   </select>
+
+
+
+
+  <select id="exportScoreByTimes" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from score
+    where times = #{times,jdbcType=INTEGER}
+  </select>
+
+
+
+
+
+
+  <!--
+    多表查询
+  -->
+<!--  <select id="exportScoreByTimes" parameterType="java.lang.Integer" resultMap="java.util.HashMap">-->
+<!--    select-->
+<!--        s.id,s.user_id as u_id,u.user_name as user_name,s.department_id as d_id,-->
+<!--        d.d_name as d_name,s.reason,s.scord,s.explain_in_detail-->
+<!--    from score s,-->
+<!--    left join user u on u.id=s.user_id,-->
+<!--    left join department d on d.id=s.department_id-->
+<!--    where times = #{times,jdbcType=INTEGER}-->
+<!--  </select>-->
+
+
+
+
   <select id="selectByCondition" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
     id,times

@@ -1,6 +1,6 @@
 package dafen.action.View;
 
-import java.util.Date;
+
 
 public class ScoreVO {
 
