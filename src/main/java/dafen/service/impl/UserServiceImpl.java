@@ -1,7 +1,6 @@
 package dafen.service.impl;
 
 import com.alibaba.druid.util.StringUtils;
-import dafen.action.View.UserVO;
 import dafen.bean.UserDO;
 import dafen.dao.UserDOMapper;
 import dafen.exception.EnumException;
@@ -11,7 +10,9 @@ import dafen.service.model.UserModel;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sun.security.krb5.internal.PAData;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -35,8 +36,6 @@ public class UserServiceImpl implements UserService {
         if(userDO.getId()<1){
             throw new FinallyException(EnumException.DATA_INSERT_ERROR);
         }
-        System.out.println("添加数据成功，id="+userDO.getId());
-        System.out.println("添加分数");
     }
 
     @Override
@@ -81,7 +80,24 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
-
+    /**
+     * 返回所用用户信息
+     * @return
+     * @throws FinallyException
+     */
+    @Override
+    public List<UserModel> getAllUser() throws FinallyException {
+        List<UserDO> userDOS = userDOMapper.selectAll();
+        if(userDOS.size() < 1){
+            throw new FinallyException(EnumException.DATA_EMPTY);
+        }
+        List<UserModel> models = new ArrayList<>();
+        for (UserDO d:userDOS
+             ) {
+            models.add(convertByDO(d));
+        }
+        return models;
+    }
 
 
     private UserDO convertByModel(UserModel userModel) throws FinallyException {

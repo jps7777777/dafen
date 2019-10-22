@@ -4,6 +4,8 @@ import dafen.exception.FinallyException;
 import dafen.service.model.UserModel;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public interface UserService {
 
@@ -33,6 +35,13 @@ public interface UserService {
 
     UserModel getUserInfoByPhone(String phone);
     UserModel getUserInfoById(int id);
+
+    /**
+     * 获取所用用户信息
+     * @return
+     * @throws FinallyException
+     */
+    List<UserModel> getAllUser() throws FinallyException;
 
 
 }

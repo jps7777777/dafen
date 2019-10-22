@@ -49,7 +49,7 @@ public class DepartmentAction extends BaseAction {
      */
     @RequestMapping("/dep")
     @ResponseBody
-    public CommonResponse getDepartment(@RequestParam(name = "department_id")int id) throws FinallyException {
+    public CommonResponse getDepartment(@RequestParam(name = "dep_id")int id) throws FinallyException {
         if(id < 1){
             throw new FinallyException(EnumException.PARAMS_IS_EMPTY);
         }

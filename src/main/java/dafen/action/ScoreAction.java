@@ -11,6 +11,7 @@ import dafen.service.DepartmentService;
 import dafen.service.ScoreService;
 import dafen.service.model.DepartmentModel;
 import dafen.service.model.ScoreModel;
+import dafen.utils.FuncUntils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -49,6 +50,7 @@ public class ScoreAction extends BaseAction {
         scoreModel.setUserId(user_id);
         scoreModel.setScord(score);
         scoreModel.setReason(reason);
+        scoreModel.setTimes(FuncUntils.getTimesWithWeek());
         scoreService.setScored(scoreModel);
         return CommonResponse.create("打分成功");
     }

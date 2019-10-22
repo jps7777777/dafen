@@ -45,6 +45,15 @@ public interface ScoreDOMapper {
     List<ScoreDO> selectByTimesAndDepId(Integer departmentId,Integer times);
 
     /**
+     * 验证数据是否存在
+     * @param userId
+     * @param departmentId
+     * @param times
+     * @return
+     */
+    ScoreDO selectByDepUserIdTimes(Integer userId,Integer departmentId,Integer times);
+
+    /**
      * 仅返回times 编号组
      * @param userId
      * @param departmentId

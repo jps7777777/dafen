@@ -10,6 +10,7 @@ import dafen.exception.EnumException;
 import dafen.exception.FinallyException;
 import dafen.service.ScoreService;
 import dafen.service.model.ScoreModel;
+import dafen.utils.FuncUntils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -68,7 +69,7 @@ public class ScoreServiceImpl implements ScoreService {
     }
 
     /**
-     * 根据次数导出数据
+     * 超级管理员根据次数导出数据
      * 做连表查询
      *
      * @param times
@@ -76,7 +77,7 @@ public class ScoreServiceImpl implements ScoreService {
      * @throws FinallyException
      */
     @Override
-    public List<Object> exportScoreByTimes(int times) throws FinallyException {
+    public List<Map<String,String>> exportScoreByTimes(int times) throws FinallyException {
         if (times < 1) {
             throw new FinallyException(EnumException.PARAMS_ERROR);
         }
@@ -87,40 +88,65 @@ public class ScoreServiceImpl implements ScoreService {
         // 配置用户及部门信息
         List<UserDO> userDOList = userDOMapper.selectAll();
         List<DepartmentDO> departmentDOList = departmentDOMapper.selectAll();
-        Map<Integer,String> userMap = new HashMap<>();
-        Map<Integer,String> depMap = new HashMap<>();
-        for (UserDO u:userDOList
-             ) {
-            userMap.put(u.getId(),u.getUserName());
+        Map<Integer, String> userMap = new HashMap<>();
+        Map<Integer, String> depMap = new HashMap<>();
+        for (UserDO u : userDOList) {
+            userMap.put(u.getId(), u.getUserName());
         }
-        for (DepartmentDO d:departmentDOList
-             ) {
-            depMap.put(d.getId(),d.getdName());
+        for (DepartmentDO d : departmentDOList) {
+            depMap.put(d.getId(), d.getdName());
         }
-
 
         // 组合数据
-        List<Object> res_list = new ArrayList<>();
+        List<Map<String,String>> res_list = new ArrayList<>();
         for (ScoreDO s : list
         ) {
-            Map<String,String> map = new HashMap<>();
-
-            map.put("reason",s.getReason());
-            map.put("userName",userMap.get(s.getUserId()));
-            map.put("depName",depMap.get(s.getDepartmentId()));
-            map.put("score",s.getScord()+"");
+            Map<String, String> map = new HashMap<>();
+            map.put("id",s.getId()+"");
+            map.put("user_id",s.getUserId()+"");
+            map.put("userName", userMap.get(s.getUserId()));
+            map.put("dep_id",s.getDepartmentId()+"");
+            map.put("depName", depMap.get(s.getDepartmentId()));
+            map.put("score", s.getScord() + "");
             res_list.add(map);
         }
         return res_list;
     }
 
+    /**
+     * Map<String, String> map = new HashMap<>();
+     *             map.put("id",s.getId()+"");
+     *             map.put("user_id",s.getUserId()+"");
+     *             map.put("userName", userMap.get(s.getUserId()));
+     *             map.put("dep_id",s.getDepartmentId()+"");
+     *             map.put("depName", depMap.get(s.getDepartmentId()));
+     *             map.put("score", s.getScord() + "");
+     *             map.put("reason", s.getReason());
+     *             map.put("explain", s.getExplainInDetail());
+     *             map.put("date", FuncUntils.getTimeString(s.getCreateTime(),"yyyy-MM-dd HH:mm:ss"));
+     *             res_list.add(map);
+     */
+
+    /**
+     *
+     * @param scoreModel
+     * @throws FinallyException
+     */
     @Override
     public void setScored(ScoreModel scoreModel) throws FinallyException {
         if (scoreModel == null || scoreModel.getScord() < 0) {
             throw new FinallyException(EnumException.PARAMS_ERROR);
         }
         ScoreDO scoreDO = convertByModel(scoreModel);
-        scoreDOMapper.insertSelective(scoreDO);
+        // 验证数据是否存在
+        ScoreDO scoreDO_old = scoreDOMapper.selectByDepUserIdTimes(
+                scoreModel.getUserId(),scoreModel.getDepartmentId(),scoreModel.getTimes());
+        if(scoreDO_old != null){
+            scoreDO.setId(scoreDO_old.getId());
+            scoreDOMapper.updateByPrimaryKeySelective(scoreDO);
+        }else{
+            scoreDOMapper.insertSelective(scoreDO);
+        }
         if (scoreDO.getId() < 1) {
             throw new FinallyException(EnumException.DATA_INSERT_ERROR);
         }

@@ -12,6 +12,21 @@ import static org.junit.Assert.*;
 public class DepartmentServiceImplTest {
 
     @Test
+    public void serviceTest(){
+        int[] arr1= new int[4];
+        int[][] arr2 = new int[3][4];
+        int arr3[] = new int[5];
+        System.out.println(arr1.length);
+        System.out.println(arr2.length);
+        System.out.println(arr2[0].length);
+        System.out.println(arr3.length);
+
+
+    }
+
+
+
+    @Test
     public void delDepartment() {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Calendar calendar = Calendar.getInstance();

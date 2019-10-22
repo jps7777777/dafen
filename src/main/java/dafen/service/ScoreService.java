@@ -6,6 +6,7 @@ import dafen.service.model.ScoreModel;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public interface ScoreService {
@@ -26,7 +27,7 @@ public interface ScoreService {
      * @return
      * @throws FinallyException
      */
-    List<Object> exportScoreByTimes(int times) throws FinallyException;
+    List<Map<String,String>> exportScoreByTimes(int times) throws FinallyException;
 
     void setScored(ScoreModel scoreModel) throws FinallyException;
 
