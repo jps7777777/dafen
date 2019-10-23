@@ -1,6 +1,7 @@
 package dafen.dao;
 
 import dafen.bean.ScoreDO;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -37,12 +38,14 @@ public interface ScoreDOMapper {
      *
      * @mbg.generated Sun Oct 20 16:15:44 CST 2019
      */
-    ScoreDO selectByPrimaryKey(Integer id);
-    List<ScoreDO> selectByUserId(Integer userId,int start,int end);
-    List<ScoreDO> selectByDepartmentId(Integer departmentId,int start,int end);
-    List<ScoreDO> selectByTimes(Integer times,int start,int end);
-    List<ScoreDO> selectByTimesAndUserId(Integer userId,Integer times);
-    List<ScoreDO> selectByTimesAndDepId(Integer departmentId,Integer times);
+    ScoreDO selectByPrimaryKey(int id);
+
+    List<ScoreDO> selectByUserId(@Param("userId")int userId,@Param("start")int start,@Param("end")int end);
+    List<ScoreDO> selectByDepartmentId(@Param("departmentId")int departmentId,@Param("start")int start,@Param("end")int end);
+    List<ScoreDO> selectByTimes(@Param("times")int times,@Param("start")int start,@Param("end")int end);
+
+    List<ScoreDO> selectByTimesAndUserId(@Param("userId")int userId,@Param("times")int times);
+    List<ScoreDO> selectByTimesAndDepId(@Param("departmentId")int departmentId,@Param("times")int times);
 
     /**
      * 验证数据是否存在
@@ -51,7 +54,8 @@ public interface ScoreDOMapper {
      * @param times
      * @return
      */
-    ScoreDO selectByDepUserIdTimes(Integer userId,Integer departmentId,Integer times);
+    ScoreDO selectByDepUserIdTimes(@Param("userId")int userId,
+                                   @Param("departmentId")int departmentId,@Param("times")int times);
 
     /**
      * 仅返回times 编号组

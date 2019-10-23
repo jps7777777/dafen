@@ -1,5 +1,6 @@
 package dafen;
 
+import dafen.utils.FuncUntils;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,11 +25,14 @@ public class App extends SpringBootServletInitializer {
     @RequestMapping("/hello")
     @ResponseBody
     public String method(){
-        return "good idea";
+        int times = FuncUntils.getTimesWithWeek();
+        return "good idea:"+times;
     }
 
     /**
+     * extends SpringBootServletInitializer
      * 目标定义：前端生产数据使用
+     * 项目部署到服务器可以直接访问接口
      */
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {

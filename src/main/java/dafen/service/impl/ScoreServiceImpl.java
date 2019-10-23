@@ -137,6 +137,9 @@ public class ScoreServiceImpl implements ScoreService {
         if (scoreModel == null || scoreModel.getScord() < 0) {
             throw new FinallyException(EnumException.PARAMS_ERROR);
         }
+        if(scoreModel.getTimes() < 0){
+            throw new FinallyException(EnumException.PARAMS_ERROR,"没有时间参数。");
+        }
         ScoreDO scoreDO = convertByModel(scoreModel);
         // 验证数据是否存在
         ScoreDO scoreDO_old = scoreDOMapper.selectByDepUserIdTimes(
