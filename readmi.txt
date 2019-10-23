@@ -20,6 +20,26 @@ https://blog.csdn.net/qq_41799291/article/details/86555067
 mybatis查询list
 https://www.cnblogs.com/fan-yuan/p/9054671.html
 
+linux 系统git保存密码:
+第一步：
+
+git config --global user.email "your email"
+git config --global user.name  "your username"
+ 
+
+设置邮箱和密码
+
+第二步：
+
+    git config --global credential.helper store
+
+ 
+
+第三步：
+提交一次数据，输入一次密码后既可以保存了。
+git push origin
+ 一次数据用户名和密码，就永久保存了
+
 
 
 
