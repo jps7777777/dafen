@@ -1,7 +1,7 @@
 package dafen.action.View;
 
-public class UserVO {
 
+public class UserVO {
     private int id;
     private String phone;
     private Integer userRole;

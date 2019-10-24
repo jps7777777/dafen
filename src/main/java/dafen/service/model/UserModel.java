@@ -1,25 +1,23 @@
 package dafen.service.model;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
+@ApiModel(description="用户的实体对象")
 public class UserModel {
-
-
-    /**
-     *
-     */
+    @ApiModelProperty(value="用户id",name="id",required=true)
     private int id;
-    /**
-     *
-     */
+    @ApiModelProperty(value="用户名",name="userName",required=true)
+    @NotNull
+    private String userName;
     @NotNull
     private String phone;
-    /**
-     *
-     */
     @NotNull
     private String userPassword;
+
     /**
      *
      */
@@ -31,11 +29,7 @@ public class UserModel {
      */
     private Integer department;
 
-    /**
-     *
-     */
-    @NotNull
-    private String userName;
+
 
 //    /**
 //     *

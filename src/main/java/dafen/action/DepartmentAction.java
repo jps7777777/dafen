@@ -6,18 +6,19 @@ import dafen.exception.FinallyException;
 import dafen.response.CommonResponse;
 import dafen.service.DepartmentService;
 import dafen.service.model.DepartmentModel;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @Controller("department")
 @RequestMapping("/d")
+//@Api(tags = {"部门使用接口","部门展示接口"},description = "部门用户信息")// 出现两个接口栏
+@Api(tags = "部门使用接口",description = "获取部门信息")
 public class DepartmentAction extends BaseAction {
 
     @Autowired
@@ -29,7 +30,7 @@ public class DepartmentAction extends BaseAction {
      * @return
      * @throws FinallyException
      */
-    @RequestMapping("/add")
+    @PostMapping("/add")
     @ResponseBody
     public CommonResponse insertDepartment(@RequestParam(name = "name")String name) throws FinallyException {
         if(StringUtils.isEmpty(name)){
@@ -47,7 +48,7 @@ public class DepartmentAction extends BaseAction {
      * @return
      * @throws FinallyException
      */
-    @RequestMapping("/dep")
+    @GetMapping("/dep")
     @ResponseBody
     public CommonResponse getDepartment(@RequestParam(name = "dep_id")int id) throws FinallyException {
         if(id < 1){
@@ -62,7 +63,8 @@ public class DepartmentAction extends BaseAction {
      * @return
      * @throws FinallyException
      */
-    @RequestMapping("/list")
+    @ApiOperation(value="获取所有的部门信息" ,notes="展示所有部门")
+    @RequestMapping(name = "/list",method = {RequestMethod.GET})
     @ResponseBody
     public CommonResponse getList() throws FinallyException {
         List<DepartmentModel> list = departmentService.getDepartments();
@@ -74,7 +76,8 @@ public class DepartmentAction extends BaseAction {
      * @return
      * @throws FinallyException
      */
-    @RequestMapping("/del")
+    @RequestMapping(name = "/del",method = RequestMethod.POST)
+    @ApiOperation(value = "删除部门信息",notes = "没有修改，可以直接删除")
     @ResponseBody
     public CommonResponse delDepartment(@RequestParam(name = "department_ids")List<Integer> dep_ids) throws FinallyException {
         if(dep_ids.size() < 1){

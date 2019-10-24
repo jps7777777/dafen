@@ -12,13 +12,12 @@ import dafen.service.ScoreService;
 import dafen.service.model.DepartmentModel;
 import dafen.service.model.ScoreModel;
 import dafen.utils.FuncUntils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import sun.util.calendar.BaseCalendar;
 
 import java.text.DateFormat;
@@ -28,6 +27,7 @@ import java.util.*;
 @RestController
 @Controller("score")
 @RequestMapping("/s")
+@Api(tags = "打分接口",description = "用户打分/申述/查看等接口")
 public class ScoreAction extends BaseAction {
 
     @Autowired
@@ -36,7 +36,8 @@ public class ScoreAction extends BaseAction {
     @Autowired
     private DepartmentService departmentService;
 
-    @RequestMapping("/add")
+    @ApiOperation(value = "部门给用户打分接口",notes = "每次提交一个用户的打分信息")
+    @RequestMapping(value = "/add",method = RequestMethod.POST)
     @ResponseBody
     public CommonResponse setScore(@RequestParam(name = "user_id") int user_id,
                                    @RequestParam(name = "dep_id") int dep_id,
@@ -89,7 +90,9 @@ public class ScoreAction extends BaseAction {
      * @return
      * @throws FinallyException
      */
-    @RequestMapping("/list")
+    @ApiOperation(value = "根据type获取不同的打分列表",notes = "当type为0时，根据用户编号获取用户的打分列表；" +
+            "当type为1时，根据dep_id获取部门的打分列表；当type为2时，获取times次的打分列表。")
+    @RequestMapping(value = "/list",method = RequestMethod.GET)
     @ResponseBody
     public CommonResponse getScoreList(@RequestParam(name = "user_id") int userId,
                                        @RequestParam(name = "times") int times,
@@ -116,7 +119,8 @@ public class ScoreAction extends BaseAction {
      * @return
      * @throws FinallyException
      */
-    @RequestMapping("/explain")
+    @ApiOperation(value = "用户对打分信息进行申述的接口")
+    @RequestMapping(value = "/explain",method = RequestMethod.POST)
     @ResponseBody
     public CommonResponse setExplain(@RequestParam(name = "score_id") int id,
                                      @RequestParam(name = "reason") String reason) throws FinallyException {

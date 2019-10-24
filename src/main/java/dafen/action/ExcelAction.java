@@ -15,12 +15,11 @@ import dafen.service.model.DepartmentModel;
 import dafen.service.model.ScoreModel;
 import dafen.service.model.UserModel;
 import dafen.utils.ExcelUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.text.DateFormat;
@@ -33,6 +32,7 @@ import java.util.Map;
 @RestController
 @Controller("excel")
 @RequestMapping("/excel")
+@Api(tags = "管理员导出信息表")
 public class ExcelAction extends BaseAction {
 
     @Autowired
@@ -51,7 +51,8 @@ public class ExcelAction extends BaseAction {
      * @param response
      * @throws FinallyException
      */
-    @RequestMapping("/export")
+    @ApiOperation(value = "管理员根据times标记，导出对应轮次的打分信息",notes = "超级管理员导出")
+    @RequestMapping(value = "/export",method = RequestMethod.GET)
     @ResponseBody
     public void exportByTimes(HttpServletResponse response,
                       @RequestParam(name = "times") int times) throws FinallyException {

@@ -8,13 +8,13 @@ import dafen.exception.FinallyException;
 import dafen.response.CommonResponse;
 import dafen.service.UserService;
 import dafen.service.model.UserModel;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.MessageDigest;
 
@@ -22,13 +22,14 @@ import java.security.MessageDigest;
 @RestController
 @Controller("login")
 @RequestMapping("/u")
+@Api(value="用户controller",tags={"用户操作接口"})
 public class LoginAction extends BaseAction{
 
     @Autowired
     private UserService userService;
 
-
-    @RequestMapping("/register")
+    @ApiOperation(value="创建用户" ,notes="创建用户时的注意事项")
+    @PostMapping("/register")
     @ResponseBody
     public CommonResponse register(@RequestParam(name = "phone")String phone,
                                    @RequestParam(name = "password")String pwd,
@@ -51,10 +52,11 @@ public class LoginAction extends BaseAction{
         return CommonResponse.create("注册成功");
     }
 
-    @RequestMapping("/login")
+    @ApiOperation(value="用户登录" ,notes="用户时传递参数")
+    @PostMapping("/login")
     @ResponseBody
     public CommonResponse login(@RequestParam(name = "phone")String phone,
-                                   @RequestParam(name = "password")String pwd) throws FinallyException {
+                                @RequestParam(name = "password")String pwd) throws FinallyException {
         if(StringUtils.isEmpty(phone) || StringUtils.isEmpty(pwd)){
             throw new FinallyException(EnumException.PARAMS_IS_EMPTY);
         }
@@ -62,7 +64,8 @@ public class LoginAction extends BaseAction{
         return CommonResponse.create(convertByModel(userModel));
     }
 
-    @RequestMapping("/reset")
+    @ApiOperation(value="修改用户密码" ,notes="用户修改密码时使用接口")
+    @PostMapping("/reset")
     @ResponseBody
     public CommonResponse resetPwd(@RequestParam(name = "phone")String phone,
                                    @RequestParam(name = "password")String pwd) throws FinallyException {
@@ -103,3 +106,5 @@ public class LoginAction extends BaseAction{
 
 
 }
+
+

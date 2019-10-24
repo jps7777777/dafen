@@ -1,14 +1,10 @@
-
+﻿
 1、不会使用关联查询
 2、mybatis的使用不熟练
 3、在linux下没有保存git的用户名及密码，每次提交都需要在次输入用户名和密码。
 4、使用map不熟练，遍历map没有做到。
 
 
-添加学习内容：
-swagger文档接口：
-https://blog.csdn.net/moyanxiaoq/article/details/84136670
-https://www.jb51.net/article/153093.htm
 
 添加内容:
    tomcat保存日志。
