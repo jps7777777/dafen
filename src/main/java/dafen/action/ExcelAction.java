@@ -52,7 +52,7 @@ public class ExcelAction extends BaseAction {
      * @throws FinallyException
      */
     @ApiOperation(value = "管理员根据times标记，导出对应轮次的打分信息",notes = "超级管理员导出")
-    @RequestMapping(value = "/export",method = RequestMethod.GET)
+    @GetMapping("/export")
     @ResponseBody
     public void exportByTimes(HttpServletResponse response,
                       @RequestParam(name = "times") int times) throws FinallyException {

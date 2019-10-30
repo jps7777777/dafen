@@ -1,6 +1,7 @@
 package dafen.dao;
 
 import dafen.bean.ScoreDO;
+import dafen.bean.SelfDO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -40,13 +41,6 @@ public interface ScoreDOMapper {
      */
     ScoreDO selectByPrimaryKey(int id);
 
-    List<ScoreDO> selectByUserId(@Param("userId")int userId,@Param("start")int start,@Param("end")int end);
-    List<ScoreDO> selectByDepartmentId(@Param("departmentId")int departmentId,@Param("start")int start,@Param("end")int end);
-    List<ScoreDO> selectByTimes(@Param("times")int times,@Param("start")int start,@Param("end")int end);
-
-    List<ScoreDO> selectByTimesAndUserId(@Param("userId")int userId,@Param("times")int times);
-    List<ScoreDO> selectByTimesAndDepId(@Param("departmentId")int departmentId,@Param("times")int times);
-
     /**
      * 验证数据是否存在
      * @param userId
@@ -54,18 +48,58 @@ public interface ScoreDOMapper {
      * @param times
      * @return
      */
-    ScoreDO selectByDepUserIdTimes(@Param("userId")int userId,
-                                   @Param("departmentId")int departmentId,@Param("times")int times);
+    ScoreDO selectByDepUserIdTimes(@Param("userId")int userId,@Param("departmentId")int departmentId,@Param("times")int times);
 
     /**
-     * 仅返回times 编号组
+     * 获取用户的打分次数列表
      * @param userId
+     * @param start
+     * @param end
+     * @return
+     */
+    List<SelfDO> selectByUserId(@Param("userId")int userId,@Param("start")int start,@Param("end")int end);
+
+    /**
+     * 根据部门id，获取打分列表
      * @param departmentId
      * @param start
      * @param end
      * @return
      */
-    List<ScoreDO> selectByCondition(int userId,int departmentId,int start,int end);
+    List<SelfDO> selectByDepartmentId(@Param("departmentId")int departmentId,@Param("start")int start,@Param("end")int end);
+    /**
+     * 查询次数列表
+     * @param start
+     * @param end
+     * @return
+     */
+    List<SelfDO> getTimes(@Param("start")int start, @Param("end")int end);
+
+
+    /**
+     * 根据次数，获取详细打分信息
+     * @param times
+     * @return
+     */
+    List<ScoreDO> selectByTimes(@Param("times")int times);
+
+    /**
+     * 根据用户id及打分次数编号，获取详细的打分信息
+     *
+     * @param userId
+     * @param times
+     * @return
+     */
+    List<ScoreDO> selectByTimesAndUserId(@Param("userId")int userId,@Param("times")int times);
+
+    /**
+     * 根据部门编号及打分次数编号，获取详细的打分信息
+     * @param departmentId
+     * @param times
+     * @return
+     */
+    List<ScoreDO> selectByTimesAndDepId(@Param("departmentId")int departmentId,@Param("times")int times);
+
 
     /**
      * 超级管理员根据次数导出该期的数据

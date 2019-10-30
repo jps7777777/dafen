@@ -64,7 +64,7 @@ public class DepartmentAction extends BaseAction {
      * @throws FinallyException
      */
     @ApiOperation(value="获取所有的部门信息" ,notes="展示所有部门")
-    @RequestMapping(name = "/list",method = {RequestMethod.GET})
+    @GetMapping("/list")
     @ResponseBody
     public CommonResponse getList() throws FinallyException {
         List<DepartmentModel> list = departmentService.getDepartments();
@@ -76,7 +76,7 @@ public class DepartmentAction extends BaseAction {
      * @return
      * @throws FinallyException
      */
-    @RequestMapping(name = "/del",method = RequestMethod.POST)
+    @PostMapping("/del")
     @ApiOperation(value = "删除部门信息",notes = "没有修改，可以直接删除")
     @ResponseBody
     public CommonResponse delDepartment(@RequestParam(name = "department_ids")List<Integer> dep_ids) throws FinallyException {

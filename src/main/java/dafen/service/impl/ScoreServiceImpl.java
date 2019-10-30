@@ -2,6 +2,7 @@ package dafen.service.impl;
 
 import dafen.bean.DepartmentDO;
 import dafen.bean.ScoreDO;
+import dafen.bean.SelfDO;
 import dafen.bean.UserDO;
 import dafen.dao.DepartmentDOMapper;
 import dafen.dao.ScoreDOMapper;
@@ -29,7 +30,7 @@ public class ScoreServiceImpl implements ScoreService {
     private DepartmentDOMapper departmentDOMapper;
 
     @Override
-    public List<ScoreModel> getScoreByCondition(int userId, int times, int depId, int type, int page) throws FinallyException {
+    public List<ScoreModel> getScoreByCondition(int userId, int times, int depId, int type) throws FinallyException {
         // 根据用户编号导出数据，用户可用
         if (type == 0 && userId < 1) {
             throw new FinallyException(EnumException.PARAMS_ERROR, "用户编号不能为空");
@@ -39,24 +40,18 @@ public class ScoreServiceImpl implements ScoreService {
             throw new FinallyException(EnumException.PARAMS_ERROR, "部门编号不能为空");
         }
         // 根据times导出数据，超级管理员可用
-        if (type == 2 && times < 1) {
+        if (times < 1) {
             throw new FinallyException(EnumException.PARAMS_ERROR, "查询次数不能为空");
         }
 
-        // 分页显示
-        if (page < 1) {
-            page = 1;
-        }
-        int start = (page - 1) * 20;
-        int end = page * 20;
-
         List<ScoreDO> listDO;
-        if (type == 0) {// 用户的次数列表
-            listDO = scoreDOMapper.selectByUserId(userId, start, end);
-        } else if (type == 1) {// 部门的次数列表
-            listDO = scoreDOMapper.selectByDepartmentId(depId, start, end);
-        } else {// 次数列表
-            listDO = scoreDOMapper.selectByTimes(times, start, end);
+        // 查询次数下的打分信息
+        if (type == 0) {// 用户的某次打分结果
+            listDO = scoreDOMapper.selectByTimesAndUserId(userId,times);
+        } else if (type == 1) {// 部门的某次打分列表
+            listDO = scoreDOMapper.selectByTimesAndDepId(depId,times);
+        } else {// 某次打分
+            listDO = scoreDOMapper.selectByTimes(times);
         }
         if (listDO.size() == 0) {
             throw new FinallyException(EnumException.DATA_EMPTY);
@@ -114,20 +109,6 @@ public class ScoreServiceImpl implements ScoreService {
     }
 
     /**
-     * Map<String, String> map = new HashMap<>();
-     *             map.put("id",s.getId()+"");
-     *             map.put("user_id",s.getUserId()+"");
-     *             map.put("userName", userMap.get(s.getUserId()));
-     *             map.put("dep_id",s.getDepartmentId()+"");
-     *             map.put("depName", depMap.get(s.getDepartmentId()));
-     *             map.put("score", s.getScord() + "");
-     *             map.put("reason", s.getReason());
-     *             map.put("explain", s.getExplainInDetail());
-     *             map.put("date", FuncUntils.getTimeString(s.getCreateTime(),"yyyy-MM-dd HH:mm:ss"));
-     *             res_list.add(map);
-     */
-
-    /**
      *
      * @param scoreModel
      * @throws FinallyException
@@ -168,13 +149,35 @@ public class ScoreServiceImpl implements ScoreService {
     }
 
     @Override
-    public List<ScoreDO> getScoreTimes(int userId, int depId, int type, int page) throws FinallyException {
+    public List<Map<String,Object>> getScoreTimes(int userId, int depId, int type, int page) throws FinallyException {
+        if ((type == 0 && userId < 1) || (type == 1 && depId < 1)) {
+            throw new FinallyException(EnumException.PARAMS_ERROR);
+        }
         // 分页显示
         if (page < 1) {
             page = 1;
         }
-        List<ScoreDO> listDO = scoreDOMapper.selectByCondition(userId, depId, ((page - 1) * 20), page * 20);
-        return listDO;
+        List<SelfDO> listDO;
+        int start = (page - 1) * 20;
+        int end = page * 20;
+        //
+        if (type == 0) {// 用户的次数列表
+            listDO = scoreDOMapper.selectByUserId(userId, start, end);
+        } else if (type == 1) {// 部门的次数列表
+            listDO = scoreDOMapper.selectByDepartmentId(depId, start, end);
+        } else {// 次数列表
+            listDO = scoreDOMapper.getTimes(start, end);
+        }
+        if(listDO.size() == 0){
+            throw new FinallyException(EnumException.DATA_EMPTY);
+        }
+        List<Map<String,Object>> list = new ArrayList<>();
+        for(SelfDO s:listDO){
+            Map<String,Object> map = new HashMap<>();
+            map.put("times",s.getTimes());
+            list.add(map);
+        }
+        return list;
     }
 
     private ScoreDO convertByModel(ScoreModel scoreModel) throws FinallyException {

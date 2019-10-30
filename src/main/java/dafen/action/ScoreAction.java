@@ -37,7 +37,7 @@ public class ScoreAction extends BaseAction {
     private DepartmentService departmentService;
 
     @ApiOperation(value = "部门给用户打分接口",notes = "每次提交一个用户的打分信息")
-    @RequestMapping(value = "/add",method = RequestMethod.POST)
+    @PostMapping("/add")
     @ResponseBody
     public CommonResponse setScore(@RequestParam(name = "user_id") int user_id,
                                    @RequestParam(name = "dep_id") int dep_id,
@@ -57,31 +57,28 @@ public class ScoreAction extends BaseAction {
     }
 
     /**
+     * 根据条件查询分次信息列表
      * @param userId
-     * @param times
+     * @param depId
+     * @param page
      * @param type
      * @return
      * @throws FinallyException
      */
-//    @RequestMapping("/list")
-//    @ResponseBody
-//    public CommonResponse getScoreTimes(@RequestParam(name = "user_id") int userId,
-//                                       @RequestParam(name = "dep_id") int depId,
-//                                       @RequestParam(name = "page") int page,
-//                                       @RequestParam(name = "type") int type) throws FinallyException {
-//        if ((type == 0 && userId < 1) || (type == 2 && depId < 1)) {
-//            throw new FinallyException(EnumException.PARAMS_IS_EMPTY);
-//        }
-//        List<ScoreDO> listModel = scoreService.getScoreTimes(userId, depId, type, page);
-//        List<ScoreVO> listVO = new ArrayList<>();
-//        for (ScoreDO model : listModel
-//        ) {
-//            DepartmentModel departmentModel = departmentService.getDepartmentById(model.getDepartmentId());
-//            listVO.add(convertByModel(model, departmentModel));
-//        }
-//        return CommonResponse.create(listVO);
-//    }
-
+    @ApiOperation(value = "查询分次列表",notes = "type为0表示查询用户的分次信息列表，用户标号不能为空；" +
+            "type为1表示查询部门的分次列表，dep_id不能为空；type==2，表示管理员查询所有的分次信息")
+    @PostMapping("/times")
+    @ResponseBody
+    public CommonResponse getScoreTimes(@RequestParam(name = "user_id") int userId,
+                                       @RequestParam(name = "dep_id") int depId,
+                                       @RequestParam(name = "page") int page,
+                                       @RequestParam(name = "type") int type) throws FinallyException {
+        if ((type == 0 && userId < 1) || (type == 1 && depId < 1)) {
+            throw new FinallyException(EnumException.PARAMS_IS_EMPTY);
+        }
+        List<Map<String,Object>> listModel = scoreService.getScoreTimes(userId, depId, type, page);
+        return CommonResponse.create(listModel);
+    }
 
     /**
      * @param userId
@@ -92,18 +89,16 @@ public class ScoreAction extends BaseAction {
      */
     @ApiOperation(value = "根据type获取不同的打分列表",notes = "当type为0时，根据用户编号获取用户的打分列表；" +
             "当type为1时，根据dep_id获取部门的打分列表；当type为2时，获取times次的打分列表。")
-    @RequestMapping(value = "/list",method = RequestMethod.GET)
+    @PostMapping("/list")
     @ResponseBody
     public CommonResponse getScoreList(@RequestParam(name = "user_id") int userId,
                                        @RequestParam(name = "times") int times,
                                        @RequestParam(name = "dep_id") int depId,
-                                       @RequestParam(name = "page") int page,
                                        @RequestParam(name = "type") int type) throws FinallyException {
-        if ((type == 0 && userId < 1) || (type == 1 && times < 1)
-                || (type == 2 && depId < 1) || (type == 3 && (times < 1 || userId < 1))) {
+        if ((type == 0 && userId < 1) || (type == 1 && depId < 1) || times < 1 ) {
             throw new FinallyException(EnumException.PARAMS_IS_EMPTY);
         }
-        List<ScoreModel> listModel = scoreService.getScoreByCondition(userId, times, depId, type, page);
+        List<ScoreModel> listModel = scoreService.getScoreByCondition(userId, times, depId, type);
         List<ScoreVO> listVO = new ArrayList<>();
         for (ScoreModel model : listModel
         ) {
@@ -120,7 +115,7 @@ public class ScoreAction extends BaseAction {
      * @throws FinallyException
      */
     @ApiOperation(value = "用户对打分信息进行申述的接口")
-    @RequestMapping(value = "/explain",method = RequestMethod.POST)
+    @PostMapping("/explain")
     @ResponseBody
     public CommonResponse setExplain(@RequestParam(name = "score_id") int id,
                                      @RequestParam(name = "reason") String reason) throws FinallyException {

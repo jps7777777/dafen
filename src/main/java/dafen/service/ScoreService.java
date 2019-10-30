@@ -19,7 +19,7 @@ public interface ScoreService {
      * @return
      * @throws FinallyException
      */
-    List<ScoreModel> getScoreByCondition(int userId,int times,int depId,int type,int page) throws FinallyException;
+    List<ScoreModel> getScoreByCondition(int userId,int times,int depId,int type) throws FinallyException;
 
     /**
      * 根据次数导出数据
@@ -33,5 +33,14 @@ public interface ScoreService {
 
     void updateScored(ScoreModel scoreModel)throws FinallyException;
 
-    List<ScoreDO> getScoreTimes(int userId, int depId, int type, int page)throws FinallyException;
+    /**
+     * 根据条件，获取打分次数数组
+     * @param userId
+     * @param depId
+     * @param type
+     * @param page
+     * @return
+     * @throws FinallyException
+     */
+    List<Map<String,Object>> getScoreTimes(int userId, int depId, int type, int page)throws FinallyException;
 }
